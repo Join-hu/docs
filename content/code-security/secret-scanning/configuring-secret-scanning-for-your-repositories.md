@@ -23,7 +23,7 @@ shortTitle: Configure secret scans
 
 ## Enabling {% data variables.secret-scanning.user_alerts %}
 
-You can enable {% data variables.secret-scanning.user_alerts %} for any {% ifversion fpt %}free public{% endif %} repository{% ifversion ghec or ghes %} that is owned by an organization{% else %} that you own{% endif %}. Once enabled, {% data reusables.secret-scanning.secret-scanning-process %}{% ifversion ghes < 3.11 %} {% data variables.product.prodname_secret_scanning_caps %} does not scan issues.{% endif %} {% data reusables.secret-scanning.what-is-scanned %}
+You can enable {% data variables.secret-scanning.user_alerts %} for any {% ifversion secret-scanning-user-owned-repos %}{% ifversion ghes %}repository{% else %} repository that is owned by an organization, and for repositories owned by user accounts when using {% data variables.product.prodname_ghe_cloud %} with {% data variables.product.prodname_emus %}{% endif %}{% elsif fpt %}free public repository that you own{% else %}repository that is owned by an organization{% endif %}. Once enabled, {% data reusables.secret-scanning.secret-scanning-process %}{% ifversion ghes < 3.11 %} {% data variables.product.prodname_secret_scanning_caps %} does not scan issues.{% endif %} {% data reusables.secret-scanning.what-is-scanned %}
 
 You can also enable {% data variables.product.prodname_secret_scanning %} for multiple repositories in an organization at the same time. For more information, see "[AUTOTITLE](/code-security/getting-started/securing-your-organization)."
 
@@ -34,6 +34,8 @@ You can also enable {% data variables.product.prodname_secret_scanning %} for mu
 
 {% endnote %}
 {% endif %}
+
+A repository administrator can choose to disable {% data variables.product.prodname_secret_scanning %} for a repository at any time. For more information, see "[AUTOTITLE](/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-security-and-analysis-settings-for-your-repository)."
 
 {% data reusables.repositories.navigate-to-repo %}
 {% data reusables.repositories.sidebar-settings %}
@@ -47,19 +49,53 @@ You can also enable {% data variables.product.prodname_secret_scanning %} for mu
 
    ![Screenshot of the "{% data variables.product.prodname_secret_scanning_caps %}" section of the "Code security and analysis" page, with the "Enable" button highlighted in a dark orange outline.](/assets/images/help/repository/enable-secret-scanning-alerts.png){% endif %}
 
-{% ifversion secret-scanning-non-provider-patterns %}
+## Enabling additional features for {% data variables.secret-scanning.user_alerts %}
 
-1. Optionally, if you want to enable the detection of non-provider patterns, click **Scan for non-provider patterns**. For more information about non-provider patterns, see "{% ifversion fpt or ghec %}[About user alerts](/code-security/secret-scanning/secret-scanning-patterns#about-user--alerts){% else %}[{% data variables.product.prodname_secret_scanning %} alerts](/code-security/secret-scanning/secret-scanning-patterns#about-secret-scanning-alerts){% endif %}."
+You can enable the following additional {% data variables.product.prodname_secret_scanning %} feature{% ifversion ghec or ghes %}s{% endif %} through your repository's "Code security and analysis" settings:
+- **Push protection**. For more information, see "[AUTOTITLE](/code-security/secret-scanning/push-protection-for-repositories-and-organizations#enabling-secret-scanning-as-a-push-protection-for-a-repository)."{% ifversion secret-scanning-validity-check-partner-patterns %}
+- **Validity checks for partner patterns**. For more infomation, see "[Enabling validity checks for partner patterns](#enabling-validity-checks-for-partner-patterns)."{% endif %}{% ifversion secret-scanning-non-provider-patterns %}
+- **Scanning for non-provider patterns**. For more information, see "[Enabling scanning for non-provider patterns](#enabling-scanning-for-non-provider-patterns)."{% endif %}{% ifversion secret-scanning-ai-generic-secret-detection%}
+- **AI-powered generic secret detection**. For more information, see "[AUTOTITLE](/code-security/secret-scanning/enabling-ai-powered-generic-secret-detection)."{% endif %}{% ifversion secret-scanning-push-protection-custom-patterns %}
+- **Scanning for custom patterns**. For more information, see "[AUTOTITLE](/code-security/secret-scanning/defining-custom-patterns-for-secret-scanning#defining-a-custom-pattern-for-a-repository)."{% endif %}
 
-   {% data reusables.secret-scanning.non-provider-patterns-beta %}
+{% ifversion secret-scanning-validity-check-partner-patterns %}
+
+### Enabling validity checks for partner patterns
+
+{% data reusables.secret-scanning.validity-check-partner-patterns-beta %}
+{% data reusables.gated-features.partner-pattern-validity-check-ghas %}
+
+You can allow {% data variables.product.prodname_secret_scanning %} to automatically check the validity of a secret found in your repository by sending it to the relevant partner. For more information on validity checks, see "[AUTOTITLE](/code-security/secret-scanning/managing-alerts-from-secret-scanning#validating-partner-patterns)."
+
+{% note %}
+
+**Note:** When you enable automatic validity checks for a repository, you also allow on-demand validity checks to be performed for patterns detected in that repository.
+
+{% endnote %}
+
+{% data reusables.repositories.navigate-to-repo %}
+{% data reusables.repositories.sidebar-settings %}
+{% data reusables.repositories.navigate-to-code-security-and-analysis %}
+{% data reusables.secret-scanning.validity-check-auto-enable %}
+
+You can also use the REST API to enable validity checks for partner patterns for your repository. For more information, see "[AUTOTITLE](/rest/repos/repos#update-a-repository)." Alternatively, organization owners and enterprise administrators can enable the feature for all repositories in the organization or enterprise settings. For more information, see "[AUTOTITLE](/organizations/keeping-your-organization-secure/managing-security-settings-for-your-organization/managing-security-and-analysis-settings-for-your-organization#allowing-validity-checks-for-partner-patterns-in-an-organization)" and "[AUTOTITLE](/admin/code-security/managing-github-advanced-security-for-your-enterprise/managing-github-advanced-security-features-for-your-enterprise)."
 
 {% endif %}
 
-{% ifversion secret-scanning-push-protection %}
+{% ifversion secret-scanning-non-provider-patterns %}
 
-1. Optionally, if you want to enable push protection, click **Enable** to the right of "Push protection." {% data reusables.secret-scanning.push-protection-overview %} For more information, see "[AUTOTITLE](/code-security/secret-scanning/protecting-pushes-with-secret-scanning)."
+### Enabling scanning for non-provider patterns
 
-   ![Screenshot of the "{% data variables.product.prodname_secret_scanning_caps %}" section. The "Enable" button is highlighted in a dark orange outline in the "Push protection" section.](/assets/images/help/repository/secret-scanning-enable-push-protection.png)
+{% data reusables.secret-scanning.non-provider-patterns-beta %}
+
+You can enable scanning for non-provider patterns. Non-provider patterns correspond to secrets such as private keys and they have a higher ratio of false positives.
+
+{% data reusables.repositories.navigate-to-repo %}
+{% data reusables.repositories.sidebar-settings %}
+{% data reusables.repositories.navigate-to-code-security-and-analysis %}
+1. Under {% data variables.product.prodname_secret_scanning_caps %}, select the checkbox next to "Scan for non-provider patterns".
+
+For more information about non-provider patterns, see "{% ifversion fpt or ghec %}[AUTOTITLE](/code-security/secret-scanning/secret-scanning-patterns#about-user--alerts){% else %}[AUTOTITLE](/code-security/secret-scanning/secret-scanning-patterns#about-secret-scanning-alerts){% endif %}."
 
 {% endif %}
 

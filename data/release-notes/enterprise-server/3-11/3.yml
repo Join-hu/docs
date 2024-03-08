@@ -52,3 +52,7 @@ sections:
       Pre-receive hooks which utilize `git rev-list` fail with an `fatal: Invalid revision range` error message.
     - |
       {% data reusables.release-notes.2024-01-ha-proxy-out-of-memory %} [Updated 2024-01-23]
+    - |
+      {% data reusables.release-notes.scheduled-reminders-unintentional %} [Updated: 2024-02-22]
+    - |
+      {% data reusables.release-notes.2024-03-increased-log-volume-in-syslog %} [Updated: 2024-03-08]
